@@ -1,23 +1,28 @@
 pipeline {
     agent any
 
-    environment {
-        APP_PORT = '3000' // Default port
-    }
-
     stages {
         stage('Checkout') {
             steps {
                 checkout scm
+            }
+        }
+
+        stage('Set Environment') {
+            steps {
                 script {
-                    // Adjust APP_PORT based on the branch name
+                    // Initialize a local variable
+                    def port
                     if (env.BRANCH_NAME == 'main') {
-                        env.APP_PORT = '3000'
+                        port = '3000'
                     } else if (env.BRANCH_NAME == 'dev') {
-                        env.APP_PORT = '3001'
+                        port = '3001'
+                    } else {
+                        port = '3000' // Default port
                     }
-                    // Log the port for verification
-                    echo "APP_PORT set to ${env.APP_PORT}"
+
+                    // Pass this variable to subsequent shell scripts as required
+                    env.APP_PORT = port
                 }
             }
         }
