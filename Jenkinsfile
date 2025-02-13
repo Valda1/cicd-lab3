@@ -20,6 +20,7 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Building the application...'
+                sh 'sudo apt-get install -y nodejs npm'
                 sh 'chmod +x scripts/build.sh'
                 sh './scripts/build.sh'
             }
