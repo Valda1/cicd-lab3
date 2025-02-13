@@ -1,26 +1,13 @@
 pipeline {
     agent any
 
-    environment {
-        APP_PORT = '3000' // Default port
-    }
-
     stages {
         stage('Checkout') {
             steps {
                 checkout scm
-                script {
-                    // Adjust APP_PORT based on the branch name
-                    if (env.BRANCH_NAME == 'main') {
-                        env.APP_PORT = '3000'
-                    } else if (env.BRANCH_NAME == 'dev') {
-                        env.APP_PORT = '3001'
-                    }
-                    // Log the port for verification
-                    echo "APP_PORT set to ${env.APP_PORT}"
-                }
             }
         }
+
 
         stage('Build') {
             steps {
@@ -47,11 +34,15 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                echo "Deploying on port ${env.APP_PORT}..."
-                sh """
-                docker run -d -p ${env.APP_PORT}:${env.APP_PORT} --name my-app-${env.BRANCH_NAME} my-app:${env.BRANCH_NAME}-${env.BUILD_ID}
-                """
-                echo "Application deployed at http://localhost:${env.APP_PORT}"
+                script {
+                    // Set the application port based on the branch name
+                    def appPort = (env.BRANCH_NAME == 'main') ? '3000' : '3001'
+                    echo "Deploying on port ${appPort}..."
+                    sh """
+                    docker run -d -p ${appPort}:${appPort} -e PORT=${appPort} --name my-app-${env.BRANCH_NAME} my-app:${env.BRANCH_NAME}-${env.BUILD_ID}
+                    """
+                    echo "Application deployed at http://localhost:${appPort}"
+                }
             }
         }
     }
