@@ -8,24 +8,6 @@ pipeline {
             }
         }
 
-        stage('Set Environment') {
-            steps {
-                script {
-                    // Initialize a local variable
-                    def port
-                    if (env.BRANCH_NAME == 'main') {
-                        port = '3000'
-                    } else if (env.BRANCH_NAME == 'dev') {
-                        port = '3001'
-                    } else {
-                        port = '3000' // Default port
-                    }
-
-                    // Pass this variable to subsequent shell scripts as required
-                    env.APP_PORT = port
-                }
-            }
-        }
 
         stage('Build') {
             steps {
@@ -52,11 +34,15 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                echo "Deploying on port ${env.APP_PORT}..."
-                sh """
-                docker run -d -p ${env.APP_PORT}:${env.APP_PORT} --name my-app-${env.BRANCH_NAME} my-app:${env.BRANCH_NAME}-${env.BUILD_ID}
-                """
-                echo "Application deployed at http://localhost:${env.APP_PORT}"
+                script {
+                    // Set the application port based on the branch name
+                    def appPort = (env.BRANCH_NAME == 'main') ? '3000' : '3001'
+                    echo "Deploying on port ${appPort}..."
+                    sh """
+                    docker run -d -p ${appPort}:${appPort} -e PORT=${appPort} --name my-app-${env.BRANCH_NAME} my-app:${env.BRANCH_NAME}-${env.BUILD_ID}
+                    """
+                    echo "Application deployed at http://localhost:${appPort}"
+                }
             }
         }
     }
