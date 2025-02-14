@@ -16,6 +16,7 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Building the application...'
+                sh 'chmod +x scripts/build.sh'
                 sh './scripts/build.sh'
             }
         }
@@ -23,6 +24,7 @@ pipeline {
         stage('Test') {
             steps {
                 echo 'Running tests...'
+                sh 'chmod +x scripts/test.sh'
                 sh './scripts/test.sh'
             }
         }
