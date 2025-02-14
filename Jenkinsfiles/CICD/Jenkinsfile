@@ -33,8 +33,6 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 echo 'Building Docker image...'
-                //sh "docker build -t my-app:${env.BRANCH_NAME}-${env.BUILD_ID} ."
-                //sh "docker build -t my-app:${env.BRANCH_NAME}-${env.BUILD_ID} -t my-app:${IMAGE_TAG} ."
                 sh "docker build -t my-app-${env.BRANCH_NAME}:${IMAGE_TAG} ."
             }
         }
@@ -45,9 +43,6 @@ pipeline {
                     // Set the application port based on the branch name
                     def appPort = (env.BRANCH_NAME == 'main') ? '3000' : '3001'
                     echo "Deploying on port ${appPort}..."
-                    /*sh """
-                    docker run -d -p ${appPort}:${appPort} -e PORT=${appPort} --name my-app-${env.BRANCH_NAME} my-app:${env.BRANCH_NAME}-${env.BUILD_ID}
-                    """*/
                     sh "docker run -d -p ${appPort}:${appPort} -e PORT=${appPort} --name my-app-${env.BRANCH_NAME} my-app-${env.BRANCH_NAME}:${IMAGE_TAG}"
                     echo "Application deployed at http://localhost:${appPort}"
                 }
