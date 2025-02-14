@@ -48,7 +48,7 @@ pipeline {
                     /*sh """
                     docker run -d -p ${appPort}:${appPort} -e PORT=${appPort} --name my-app-${env.BRANCH_NAME} my-app:${env.BRANCH_NAME}-${env.BUILD_ID}
                     """*/
-                    sh "docker run -d -p ${appPort}:${appPort} -e PORT=${appPort} --name my-app-${env.BRANCH_NAME} my-app:${IMAGE_TAG}"
+                    sh "docker run -d -p ${appPort}:${appPort} -e PORT=${appPort} --name my-app-${env.BRANCH_NAME} my-app-${env.BRANCH_NAME}:${IMAGE_TAG}"
                     echo "Application deployed at http://localhost:${appPort}"
                 }
             }
