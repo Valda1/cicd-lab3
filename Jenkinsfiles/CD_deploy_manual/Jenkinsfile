@@ -33,8 +33,6 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 echo 'Building Docker image...'
-                //sh "docker build -t my-app:${env.BRANCH_NAME}-${env.BUILD_ID} ."
-                //sh "docker build -t my-app:${env.BRANCH_NAME}-${env.IMAGE_TAG} ."
                 sh "docker build -t my-app:${env.IMAGE_TAG} ."
             }
         }
@@ -43,16 +41,7 @@ pipeline {
             steps {
                 script {
                     echo "Deploying on port ${env.APP_PORT}..."
-                    sh """
                     docker run -d -p ${env.APP_PORT}:${env.APP_PORT} --name my-app-${env.IMAGE_TAG} my-app:${env.IMAGE_TAG}
-                    """
-
-                    /*sh """
-                    docker run -d -p ${env.APP_PORT}:${env.APP_PORT} --name my-app-${env.BRANCH_NAME} my-app:${env.BRANCH_NAME}-${env.IMAGE_TAG}
-                    """*/
-                   /* sh """
-                    docker run -d -p ${env.APP_PORT}:${env.APP_PORT} --name my-app-${env.BRANCH_NAME} my-app:${env.BRANCH_NAME}-${env.BUILD_ID}
-                    """*/
                     echo "Application deployed at http://localhost:${env.APP_PORT}"
                 }
             }
