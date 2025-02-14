@@ -34,7 +34,8 @@ pipeline {
             steps {
                 echo 'Building Docker image...'
                 //sh "docker build -t my-app:${env.BRANCH_NAME}-${env.BUILD_ID} ."
-                sh "docker build -t my-app:${env.BRANCH_NAME}-${env.BUILD_ID} -t my-app:${IMAGE_TAG} ."
+                //sh "docker build -t my-app:${env.BRANCH_NAME}-${env.BUILD_ID} -t my-app:${IMAGE_TAG} ."
+                sh "docker build -t my-app:${env.BRANCH_NAME}-${env.BUILD_ID}:${IMAGE_TAG} ."
             }
         }
 
